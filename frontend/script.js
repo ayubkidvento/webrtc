@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io("https://webrtc-0lsv.onrender.com"); // io("http://localhost:3000");
 const statusTxt = document.getElementById("status");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
