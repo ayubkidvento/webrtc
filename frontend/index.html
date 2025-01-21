@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <p id="status">Waiting for connection...</p>
+    <div class="media__container">
+        <div class="medias">
+            <div class="videos">
+                <video></video>
+                <video src=""></video>
+            </div>
+            <div class="buttons">
+                <button type="button" id="start">Start</button>
+                <button type="button" id="stop" disabled>Stop</button>
+            </div>
+        </div>
+        <div class="chats">
+            <div class="chats__feeds"></div>
+            <input type="button" name="text" id="text" placeholder="Type...">
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+}
+body {
+    padding: 16px;
+    height: 100vh;
+    width: 100vw;
+    background-color: antiquewhite;
+}
+.media__container {
+    height: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+}
+.medias, .chats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.videos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+form, .buttons {
+    display: flex;
+    gap: 12px;
+}
+video {
+    width: 100%;
+    height: auto;
+    background-color: rgba(128, 128, 128, 0.231);
+    border-radius: 4px;
+    overflow: hidden;
+}
+button, input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 12px;
+    border-radius: 4px;
+    background-color: white;
+}
+.chats .chats__feeds {
+    flex: 1;
+}
+
+.chats__feeds {
+    flex: 1;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.left {
+    /* Messages from others */
+    background-color: #eee;
+    align-self: flex-start;
+    /* Align to the left */
+}
+
+.right {
+    /* Messages from the current user */
+    background-color: #ccf;
+    align-self: flex-end;
+    /* Align to the right */
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: gray;
+}
+
+@media screen and (max-width: 600px) {
+    .media__container {
+        flex-direction: column;
+        
+    }
+    .chats {
+        background-color: burlywood;
+    }
+}
