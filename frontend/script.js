@@ -147,23 +147,32 @@ socket.on("offer", async (offer) => {
     };
     await pc.setRemoteDescription(offer);
     const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
     socket.emit("answer", answer);
   }
 });
-
+let candidateQueue = [];
 socket.on("answer", async (answer) => {
   if (pc) {
     await pc.setRemoteDescription(answer);
+    candidateQueue.forEach(async (candidate) => {
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch (error) {
+        console.error("Error adding ICE candidate:", error);
+      }
+    });
+    candidateQueue = [];
   }
 });
 
 socket.on("candidate", async (candidate) => {
-  if (pc) {
+  if (pc && pc.remoteDescription) {
     try {
       await pc.addIceCandidate(candidate);
     } catch (error) {
       console.error("Error adding ICE candidate:", error);
     }
+  } else {
+    candidateQueue.push(candidate);
   }
 });
