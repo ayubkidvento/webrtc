@@ -47,14 +47,14 @@ socket.on("partnerDisconnected", (data) => {
   pairedUser = null;
   chatsContainer.innerHTML = "";
   console.log("Disconnected:", data);
-  textInput.setAttribute("disabled", "true");
+  textInput.disabled = true;
   statusTxt.innerText = "Partner disconnected! Waiting for another partner...";
 });
 
 socket.on("paired", (data) => {
   pairedUser = data.partnerId;
-  console.log("Disconnected from server ", data);
-  textInput.setAttribute("disabled", "false");
+  console.log("Paired with user ", data);
+  textInput.disabled = false;
   statusTxt.innerText = `Connected with ${data.partnerUsername}`;
 });
 
