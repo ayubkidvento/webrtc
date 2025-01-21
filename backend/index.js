@@ -101,25 +101,36 @@ io.on("connection", (socket) => {
   });
 
   // for video calling
+  // socket.on("offer", (offer) => {
+  //   const partnerId = pairs[socket.id];
+  //   if (partnerId) {
+  //     io.to(partnerId).emit("offer", offer);
+  //   }
+  // });
+
+  // socket.on("answer", (answer) => {
+  //   const partnerId = pairs[socket.id];
+  //   if (partnerId) {
+  //     io.to(partnerId).emit("answer", answer);
+  //   }
+  // });
+
+  // socket.on("candidate", (candidate) => {
+  //   const partnerId = pairs[socket.id];
+  //   if (partnerId) {
+  //     io.to(partnerId).emit("candidate", candidate);
+  //   }
+  // });
   socket.on("offer", (offer) => {
-    const partnerId = pairs[socket.id];
-    if (partnerId) {
-      io.to(partnerId).emit("offer", offer);
-    }
+    socket.broadcast.emit("offer", offer); // Simplified broadcast - refine with rooms or peer IDs later
   });
 
   socket.on("answer", (answer) => {
-    const partnerId = pairs[socket.id];
-    if (partnerId) {
-      io.to(partnerId).emit("answer", answer);
-    }
+    socket.broadcast.emit("answer", answer); // Simplified broadcast
   });
 
   socket.on("candidate", (candidate) => {
-    const partnerId = pairs[socket.id];
-    if (partnerId) {
-      io.to(partnerId).emit("candidate", candidate);
-    }
+    socket.broadcast.emit("candidate", candidate); // Simplified broadcast
   });
 });
 
