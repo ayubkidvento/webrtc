@@ -4,6 +4,9 @@ const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const textInput = document.getElementById("text");
 const chatsContainer = document.querySelector(".chats__feeds");
+const localVideo = document.getElementById("localVideo");
+const remoteVideo = document.getElementById("remoteVideo");
+
 let currentUserId = null; // Get assigned by the server
 let pairedUser = null; // Get assigned by the server
 // video calling
