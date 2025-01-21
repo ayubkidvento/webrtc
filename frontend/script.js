@@ -4,6 +4,14 @@ const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const textInput = document.getElementById("text");
 const chatsContainer = document.querySelector(".chats__feeds");
+let currentUserId = null; // Get assigned by the server
+let pairedUser = null; // Get assigned by the server
+// video calling
+const configuration = {
+  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+};
+let pc;
+let localStream;
 
 function toggleButtons() {
   if (startBtn.getAttribute("disabled") == "true") {
@@ -15,18 +23,50 @@ function toggleButtons() {
   }
 }
 
-startBtn.addEventListener("click", () => {
+startBtn.addEventListener("click", async () => {
   console.log("start");
   toggleButtons();
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    localVideo.srcObject = localStream; // Assuming you have a <video id="localVideo"> element
+
+    pc = new RTCPeerConnection(configuration);
+
+    localStream.getTracks().forEach((track) => pc.addTrack(track, localStream));
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("candidate", event.candidate);
+      }
+    };
+
+    pc.ontrack = (event) => {
+      remoteVideo.srcObject = event.streams[0]; // Assuming you have a <video id="remoteVideo"> element
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    socket.emit("offer", offer);
+  } catch (error) {
+    console.error("Error starting video call:", error);
+  }
 });
 
 stopBtn.addEventListener("click", () => {
   console.log("stop");
   toggleButtons();
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+    localVideo.srcObject = null; // Clear the video element
+    if (pc) {
+      pc.close();
+      pc = null;
+    }
+  }
 });
-
-let currentUserId = null; // Get assigned by the server
-let pairedUser = null; // Get assigned by the server
 
 // Set username upon connecting
 socket.emit("setUserName", prompt("Enter your username:"));
@@ -83,5 +123,47 @@ textInput.addEventListener("keydown", (event) => {
     socket.emit("message", val);
     console.log("Input value on Enter:", val);
     textInput.value = "";
+  }
+});
+
+// for video calling
+socket.on("offer", async (offer) => {
+  if (!pc) {
+    // Ensure this code runs only if you're not the caller
+    pc = new RTCPeerConnection(configuration);
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    localVideo.srcObject = localStream; // Display your local video
+    pc.ontrack = (event) => {
+      remoteVideo.srcObject = event.streams[0];
+    };
+    localStream.getTracks().forEach((track) => pc.addTrack(track, localStream));
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("candidate", event.candidate);
+      }
+    };
+    await pc.setRemoteDescription(offer);
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    socket.emit("answer", answer);
+  }
+});
+
+socket.on("answer", async (answer) => {
+  if (pc) {
+    await pc.setRemoteDescription(answer);
+  }
+});
+
+socket.on("candidate", async (candidate) => {
+  if (pc) {
+    try {
+      await pc.addIceCandidate(candidate);
+    } catch (error) {
+      console.error("Error adding ICE candidate:", error);
+    }
   }
 });

@@ -99,6 +99,28 @@ io.on("connection", (socket) => {
     // Update user list for everyone
     io.emit("userList", Object.values(users)); // Send user objects
   });
+
+  // for video calling
+  socket.on("offer", (offer) => {
+    const partnerId = pairs[socket.id];
+    if (partnerId) {
+      io.to(partnerId).emit("offer", offer);
+    }
+  });
+
+  socket.on("answer", (answer) => {
+    const partnerId = pairs[socket.id];
+    if (partnerId) {
+      io.to(partnerId).emit("answer", answer);
+    }
+  });
+
+  socket.on("candidate", (candidate) => {
+    const partnerId = pairs[socket.id];
+    if (partnerId) {
+      io.to(partnerId).emit("candidate", candidate);
+    }
+  });
 });
 
 const PORT = 3000;
