@@ -74,6 +74,7 @@ function displayMessage(message) {
   messageElement.classList.add(isCurrentUser ? "right" : "left");
 
   chatsContainer.appendChild(messageElement);
+  chatsContainer.scrollTop = chatsContainer.scrollHeight;
 }
 
 textInput.addEventListener("keydown", (event) => {
