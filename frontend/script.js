@@ -26,6 +26,7 @@ stopBtn.addEventListener("click", () => {
 });
 
 let currentUserId = null; // Get assigned by the server
+let pairedUser = null; // Get assigned by the server
 
 // Set username upon connecting
 socket.emit("setUserName", prompt("Enter your username:"));
@@ -43,12 +44,17 @@ socket.on("message", (data) => {
 });
 
 socket.on("partnerDisconnected", (data) => {
+  pairedUser = null;
+  chatsContainer.innerHTML = "";
   console.log("Disconnected:", data);
+  textInput.setAttribute("disabled", "true");
   statusTxt.innerText = "Partner disconnected! Waiting for another partner...";
 });
 
 socket.on("paired", (data) => {
+  pairedUser = data.partnerId;
   console.log("Disconnected from server ", data);
+  textInput.setAttribute("disabled", "false");
   statusTxt.innerText = `Connected with ${data.partnerUsername}`;
 });
 
