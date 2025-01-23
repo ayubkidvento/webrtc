@@ -123,9 +123,11 @@ function displayMessage(message) {
 textInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     const val = textInput.value;
-    socket.emit("message", val);
-    console.log("Input value on Enter:", val);
-    textInput.value = "";
+    if (val.length > 0) {
+      socket.emit("message", val);
+      console.log("Input value on Enter:", val);
+      textInput.value = "";
+    }
   }
 });
 
