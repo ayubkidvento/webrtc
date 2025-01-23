@@ -111,7 +111,8 @@ function displayMessage(message) {
   const messageElement = document.createElement("div");
   // Create message text with timestamp
   const timestamp = new Date(message.datetime).toLocaleTimeString(); // Format the timestamp
-  messageElement.innerHTML = `<strong>${message.sender}:</strong> ${message.text} <span class="timestamp">(${timestamp})</span>`;
+  const formattedText = createHTMLWithLinks(message.text);
+  messageElement.innerHTML = `<strong>${message.sender}:</strong> ${formattedText} <span class="timestamp">(${timestamp})</span>`;
 
   messageElement.classList.add("message"); // Add a general message class
   messageElement.classList.add(isCurrentUser ? "right" : "left");
@@ -181,3 +182,39 @@ socket.on("candidate", async (candidate) => {
     candidateQueue.push(candidate);
   }
 });
+
+// convert text into appriate paragraph, links
+function createHTMLWithLinks(text) {
+  // Split text into segments based on spaces
+  const words = text.split(" ");
+  // Create a <p> element
+  const paragraph = document.createElement("p");
+
+  words.forEach((word) => {
+    let element;
+
+    // Check if the word is a URL
+    if (word.startsWith("http://") || word.startsWith("https://")) {
+      element = document.createElement("a");
+      element.href = word;
+      element.textContent = new URL(word).hostname; // Display the hostname
+      element.target = "_blank"; // Open link in new tab
+    }
+    // Check if the word is an email
+    else if (word.includes("@") && word.includes(".")) {
+      element = document.createElement("a");
+      element.href = `mailto:${word}`;
+      element.textContent = word;
+    }
+    // Otherwise, treat it as plain text
+    else {
+      element = document.createTextNode(word);
+    }
+
+    // Append the word or link to the paragraph
+    paragraph.appendChild(element);
+    paragraph.appendChild(document.createTextNode(" ")); // Add a space after each word
+  });
+
+  return paragraph;
+}
