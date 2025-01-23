@@ -216,5 +216,5 @@ function createHTMLWithLinks(text) {
     paragraph.appendChild(document.createTextNode(" ")); // Add a space after each word
   });
 
-  return paragraph;
+  return paragraph.innerHTML;
 }
